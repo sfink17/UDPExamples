@@ -118,9 +118,18 @@ public class RUC
 					buf[1] = 0;
 
 					int fin = mMis.read(buf, 2, buf.length - 2);
+					long time = System.currentTimeMillis();
+					if (fin == -1 && synack != syn-1){
+						if ((System.currentTimeMillis() - 200) > time){
+							socket.send(new DatagramPacket(buf, buf.length, address, 4545));
+							continue;
+						}
+						else {
+							continue;
+						}
+					}
 					System.out.print(synack);
-					if (fin == -1 && synack != syn-1) continue;
-					else if (fin == -1) {
+					if (fin == -1) {
 						buf[1] = 1;
 						lastSyn = syn;
 						System.out.println(lastSyn);
@@ -213,7 +222,7 @@ public class RUC
 		}
 		 */
 		String host = "127.0.0.1";
-		File mFile = new File("src/com/simon/howdy.txt");
+		File mFile = new File("com/simon/howdy.txt");
 
 		// Create a datagram socket for receiving and sending UDP packets
 		// through the port specified on the command line.
